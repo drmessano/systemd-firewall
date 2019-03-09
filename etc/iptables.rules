@@ -1,0 +1,50 @@
+*filter
+-A INPUT -i lo -j ACCEPT
+-A INPUT -d 127.0.0.0/8 -j REJECT
+-A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+-A INPUT -p tcp -m state --state NEW --dport ssh -j ACCEPT
+-N SIP
+-A SIP -m string --string "sundayddr" --algo bm -j DROP
+-A SIP -m string --string "sipsak" --algo bm -j DROP
+-A SIP -m string --string "sipvicious" --algo bm --icase -j DROP
+-A SIP -m string --string "sipv" --algo bm --icase -j DROP
+-A SIP -m string --string "SIVuS" --algo bm --icase -j DROP
+-A SIP -m string --string "friendly-scanner" --algo bm -j DROP
+-A SIP -m string --string "iWar" --algo bm -j DROP
+-A SIP -m string --string "sip-scan" --algo bm -j DROP
+-A SIP -m string --string "sipcli" --algo bm -j  DROP
+-A SIP -m string --string "eyeBeam" --algo bm -j DROP
+-A SIP -m string --string "VaxSIPUserAgent" --algo bm -j DROP
+-A SIP -m string --string "VaxIPUserAgent" --algo bm -j DROP
+-A SIP -m string --string "Gulp" --algo bm -j DROP
+-A SIP -m string --string "smap" --algo bm -j DROP
+-A SIP -m string --string "siparmyknife" --algo bm -j DROP
+-A SIP -m string --string "Ozeki" --algo bm -j DROP
+-A SIP -m string --string "rdec258e" --algo bm -j DROP
+-A SIP -m string --string "VoIP SIP" --algo bm -j DROP
+-A SIP -m string --string "sip:nm@nm" --algo bm -j DROP
+-A SIP -m string --string "sip:carol@chicago.com" --algo bm -j DROP
+-A SIP -m string --string "REGISTER sip:" --algo bm -m recent --set
+-A SIP -m string --string "REGISTER sip:" --algo bm -m recent --update --seconds 60 --hitcount 20 --rttl -j DROP
+-A SIP -m string --string "INVITE sip:" --algo bm -m recent --set
+-A SIP -m string --string "INVITE sip:" --algo bm -m recent --update --seconds 60 --hitcount 20 --rttl -j DROP
+-A SIP -m hashlimit --hashlimit 6/sec --hashlimit-mode srcip,dstport --hashlimit-name tunnel_limit -j ACCEPT
+-A SIP -j DROP
+-A INPUT -p tcp --dport sip:sip-tls -m state --state ESTABLISHED,RELATED -m recent ! --rcheck -j DROP
+-A INPUT -p tcp --dport sip:sip-tls -j SIP
+-A INPUT -p udp --dport sip:sip-tls -j SIP
+-A INPUT -p tcp --dport iax -j ACCEPT
+-A INPUT -p udp --dport iax -j ACCEPT
+-A INPUT -p udp --dport 10000:20000 -j ACCEPT
+-A INPUT -p udp --dport 4000:4999 -j ACCEPT
+-A INPUT -p udp --dport tftp -j ACCEPT
+-A INPUT -p tcp --dport ntp -j ACCEPT
+-A INPUT -p udp --dport ntp -j ACCEPT
+-A INPUT -p tcp --dport http -j ACCEPT
+-A INPUT -p tcp --dport https -j ACCEPT
+-A INPUT -p tcp --syn -m limit --limit 1/s --limit-burst 3 -j RETURN
+-A INPUT -p icmp -m limit --limit 1/s --limit-burst 1 -j RETURN
+-A INPUT -j DROP
+-A FORWARD -j DROP
+-A OUTPUT -j ACCEPT
+COMMIT
